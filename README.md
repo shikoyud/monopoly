@@ -7,9 +7,9 @@ This is a personal project created for learning purposes. It supports 2–8 play
 
 ## Tech Stack
 
-**Client:** SvelteKit, TailwindCSS, DaisyUI
+**Client:** [SvelteKit](https://svelte.dev/), [TailwindCSS](https://tailwindcss.com/), [DaisyUI](https://daisyui.com/)
 
-**Server:** Firebase
+**Server:** [Firebase](https://firebase.google.com/)
 
 
 ## License
