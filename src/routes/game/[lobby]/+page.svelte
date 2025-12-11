@@ -71,7 +71,9 @@
     initPlayersData();
     const unsubcribeChanged = onChildChanged(playersRef, async (snapshot) => {
       const changedPlayer = Player.fromFirebase(snapshot.key!, snapshot.val());
-      await playerManager.movePlayer(snapshot.key!, snapshot.val().position);
+      if (user.uid != snapshot.key) {
+        await playerManager.movePlayer(snapshot.key!, snapshot.val().position);
+      }
       playerManager.updatePlayer(changedPlayer);
     });
     const unsubcribeTurnChanged = onValue(lobbyTurnRef, (snapshot) => {

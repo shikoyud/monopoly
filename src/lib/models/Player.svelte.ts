@@ -8,6 +8,7 @@ export class Player {
   position: number = $state(0);
   ownedProperty: number[] = $state([]);
   inJail: boolean = $state(false);
+  isMoving: boolean = $state(false);
 
   constructor(id: string, name: string) {
     this.id = id
@@ -40,15 +41,22 @@ export class Player {
     }
   }
 
-  async goTo(position: number) {
-    while (this.position != position) {
-      if (this.position == 39) {
-        this.position = 0;
-        continue;
+  async goTo(target: number): Promise<void> {
+    if (this.isMoving) return;
+
+    this.isMoving = true;
+
+    return new Promise(async resolve => {
+      while (this.position !== target) {
+        if (this.position === 39) this.position = 0;
+        else this.position++;
+
+        await sleep(250);
       }
-      this.position++;
-      await sleep(300);
-    }
+
+      this.isMoving = false;
+      resolve();
+    });
   }
 
 }

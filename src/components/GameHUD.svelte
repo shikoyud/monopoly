@@ -1,25 +1,29 @@
 <script lang="ts">
+  import TileInfoModal from "./TileInfoModal.svelte";
   import { page } from "$app/state";
   import { database, user } from "$lib";
   import { gameManager } from "$lib/managers/GameManager.svelte";
   import type { Player } from "$lib/models/Player.svelte";
+  import type { Tile } from "$lib/models/Tile";
   import { ref, update } from "firebase/database";
-  import TileInfoModal from "./TileInfoModal.svelte";
+
   interface ComponentProps {
     players: Player[];
     currentTurnPlayerId: string;
   }
-
   let lobby = page.params.lobby!;
   let { players, currentTurnPlayerId }: ComponentProps = $props();
+
+  let tileModal = $state<HTMLDialogElement>();
 
   const playerRef = ref(database, "lobbies/" + lobby + "/players/" + user.uid);
   const lobbyRef = ref(database, "lobbies/" + lobby);
 
   let player = $derived(players.find((player) => player.id == user.uid))!;
+  let rollPressed = $state(false);
   let isTurn = $derived(user.uid === currentTurnPlayerId)!;
 
-  let tileInfoModal = $state<HTMLDialogElement>();
+  let currentTile = $state<Tile>(gameManager.tiles[0]);
 
   async function rollDice() {
     if (!player || !isTurn) {
@@ -27,6 +31,7 @@
       return;
     }
     // TODO: Handle consecutive double roll
+    rollPressed = true;
     const dice1 = gameManager.rollDice();
     const dice2 = gameManager.rollDice();
     const totalRoll = dice1 + dice2;
@@ -36,10 +41,14 @@
     await update(playerRef, {
       position: newPosition,
     });
+    await player.goTo(newPosition);
 
     handleTile(newPosition);
 
+    await waitForModalClose(tileModal!);
+
     await advanceTurn();
+    rollPressed = false;
   }
   async function advanceTurn() {
     if (!players.length) {
@@ -58,8 +67,18 @@
   }
 
   function handleTile(position: number) {
-    const tile = gameManager.tiles[position];
-    console.log(tile);
+    currentTile = gameManager.tiles[position];
+    tileModal?.showModal();
+    console.log(currentTile);
+  }
+  function waitForModalClose(dialog: HTMLDialogElement) {
+    return new Promise<void>((resolve) => {
+      const closeHandler = () => {
+        dialog.removeEventListener("close", closeHandler);
+        resolve();
+      };
+      dialog.addEventListener("close", closeHandler);
+    });
   }
 </script>
 
@@ -69,9 +88,6 @@
 >
   <div class="flex flex-col flex-19 items-center justify-center">
     <span class="text-5xl absolute top-5">SOME TEXT</span>
-    <button class="btn btn-neutral" onclick={() => tileInfoModal?.showModal()}
-      >SHOW MODAL</button
-    >
     <ul class="list bg-base-200 rounded-box shadow-md w-full">
       <li class="p-4 pb-2 text-xs opacity-60 tracking-wide bg-base-300">
         Danh sách người chơi
@@ -106,7 +122,7 @@
   <div class="flex flex-3 bg-base-300 items-center justify-around">
     <button
       class="btn btn-success w-fit h-fit"
-      disabled={!isTurn}
+      disabled={!isTurn || rollPressed}
       onclick={async () => await rollDice()}
     >
       <!-- prettier-ignore -->
@@ -115,5 +131,4 @@
   </div>
 </div>
 
-<!-- MODALS -->
-<TileInfoModal bind:modal={tileInfoModal} tile={gameManager.tiles[3]} />
+<TileInfoModal bind:modal={tileModal} tile={currentTile} isGetInfo={false} />
