@@ -1,5 +1,5 @@
 
-# monopoly
+# monopoly **(WIP)**
 
 A Monopoly game built with [SvelteKit](https://svelte.dev/) and [Firebase](https://firebase.google.com/).
 
