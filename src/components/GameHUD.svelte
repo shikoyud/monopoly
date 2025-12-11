@@ -13,11 +13,11 @@
   let lobby = page.params.lobby!;
   let { players, currentTurnPlayerId }: ComponentProps = $props();
 
-  const playerRef = ref(database, "lobbies/" + lobby + "/players/" + user!.uid);
+  const playerRef = ref(database, "lobbies/" + lobby + "/players/" + user.uid);
   const lobbyRef = ref(database, "lobbies/" + lobby);
 
-  let player = $derived(players.find((player) => player.id == user?.uid))!;
-  let isTurn = $derived(user?.uid === currentTurnPlayerId)!;
+  let player = $derived(players.find((player) => player.id == user.uid))!;
+  let isTurn = $derived(user.uid === currentTurnPlayerId)!;
 
   let tileInfoModal = $state<HTMLDialogElement>();
 
