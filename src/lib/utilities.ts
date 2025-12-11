@@ -24,6 +24,10 @@ export function sleep(ms: number) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+export function getName(name: string) {
+  return name.replace("<br>", " ");
+}
+
 export function randomCodeGenerator(length: number): string {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
   let result = ""
@@ -80,15 +84,20 @@ export function getImageSource(tile: () => Tile) {
         src: '/luxury_tax.png',
         alt: 'luxury_tax'
       }
+    case 'go':
+      return {
+        src: '/go.png',
+        alt: 'go'
+      }
     case 'go_to_jail':
       return {
         src: '/go_to_jail.png',
         alt: 'go_to_jail'
       }
-    case 'jail_visit':
+    case 'jail':
       return {
-        src: '/prison.png',
-        alt: 'prison'
+        src: '/jail.png',
+        alt: 'jail'
       }
     case 'rest_stop':
       return {

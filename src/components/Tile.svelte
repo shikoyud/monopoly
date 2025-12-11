@@ -1,8 +1,11 @@
 <script lang="ts">
   import { getImageSource } from "$lib";
+  import TileInfoModal from "./TileInfoModal.svelte";
 
   let { tile } = $props();
   let { src, alt } = getImageSource(() => tile);
+
+  let tileModal = $state<HTMLDialogElement>();
 
   // svelte-ignore state_referenced_locally
   const flex =
@@ -21,6 +24,11 @@
   style:grid-row={tile.row}
   style:grid-column={tile.col}
 >
+  <button
+    class="absolute h-full w-full z-20 hover:bg-black hover:opacity-10"
+    onclick={() => tileModal?.showModal()}
+    aria-label="tileInfo"
+  ></button>
   <!-- CORNER TILES -->
   {#if tile.side.startsWith("corner")}
     <div class="flex flex-col w-full h-full">
@@ -109,7 +117,7 @@
     {@const writingMode =
       tile.side === "left" || tile.side === "right" ? "vertical-rl" : ""}
     <div
-      class="flex-3 {margin} text-[70%]"
+      class="flex-3 {margin} text-[60%]"
       style:writing-mode={writingMode}
       style:transform={`rotate(${textRotate})`}
     >
@@ -230,3 +238,5 @@
     </div>
   {/if}
 </div>
+
+<TileInfoModal bind:modal={tileModal} {tile} isGetInfo={true} />

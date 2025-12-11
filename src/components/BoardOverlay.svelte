@@ -6,7 +6,7 @@
 </script>
 
 <div
-  class="h-screen w-[100vh] items-center justify-center bg-transparent z-10 absolute"
+  class="h-screen w-[100vh] items-center justify-center bg-transparent absolute"
 >
   <div
     class="grid gap-0 grid-cols-[12fr_repeat(9,7fr)_12fr]

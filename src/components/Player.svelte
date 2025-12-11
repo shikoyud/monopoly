@@ -4,7 +4,7 @@
 
 <div
   class="bg-white rounded-xl border-3 border-solid fit text-xs font-bold
-  p-1 w-fit"
+  p-1 w-fit z-10"
   style:border-color={player.color}
   style:color={player.color}
 >
